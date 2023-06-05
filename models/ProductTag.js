@@ -7,6 +7,25 @@ class ProductTag extends Model {}
 ProductTag.init(
   {
     // define columns
+
+    // do i need id attribute???????????
+
+    product_id: {
+      type: DataType.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'product',
+        key: 'id'
+      }
+    },
+    tag_id: {
+      type: DataType.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'tag',
+        key: 'id'
+      }
+    },
   },
   {
     sequelize,
