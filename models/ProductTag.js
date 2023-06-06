@@ -10,8 +10,14 @@ ProductTag.init(
 
     // do i need id attribute???????????
 
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     product_id: {
-      type: DataType.INTEGER,
+      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: 'product',
@@ -19,7 +25,7 @@ ProductTag.init(
       }
     },
     tag_id: {
-      type: DataType.INTEGER,
+      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: 'tag',
