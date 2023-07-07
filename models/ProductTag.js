@@ -6,11 +6,7 @@ class ProductTag extends Model {}
 
 ProductTag.init(
   {
-    // define columns
-
-    // do i need id attribute???????????
-
-    id: {
+      id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
