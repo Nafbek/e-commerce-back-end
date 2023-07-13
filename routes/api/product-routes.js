@@ -8,7 +8,6 @@ router.get("/", async (req, res) => {
     const productData = await Product.findAll({
       include: [Category, { model: Tag, through: ProductTag }],
     });
-    console.log(productData);
     res.status(200).json(productData);
   } catch (err) {
     console.log(err);
@@ -64,7 +63,6 @@ router.put("/:id", (req, res) => {
         res.status(400).json({ message: "Product not found" });
         return;
       }
-      // return res.status(200).json(updatedProduct);
       return ProductTag.findAll({
         where: {
           product_id: req.params.id,
@@ -98,13 +96,12 @@ router.put("/:id", (req, res) => {
       res.status(200).json({ message: "Product updated successfully" })
     )
     .catch((err) => {
-      // console.log(err);
       res.status(500).json(err);
     });
 });
 
+// delete one product by its `id` value
 router.delete("/:id", async (req, res) => {
-  // delete one product by its `id` value
   try {
     const deleteProduct = await Product.destroy({
       where: {
