@@ -1,44 +1,37 @@
-const router = require('express').Router();
-const { Product, Category, Tag, ProductTag } = require('../../models');
-
+const router = require("express").Router();
+const { Product, Category, Tag, ProductTag } = require("../../models");
 
 // Get all products
 // The `/api/products` endpoint associated Category and Tag data
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const productData = await Product.findAll({
-    include: [Category, {model: Tag, through: ProductTag}]
-  })
-  console.log(productData)
-  res.status(200).json(productData)
-  }
-  catch (err) {
-    console.log(err)
-    res.status(500).json(err)
+      include: [Category, { model: Tag, through: ProductTag }],
+    });
+    console.log(productData);
+    res.status(200).json(productData);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
   }
 });
 
 // Get one product by its `id` including its associated Category and Tag data
-router.get('/:id', async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const productData = await Product.findByPk(req.params.id, {
-    include: [
-      {model: Category}, {model: Tag, through: ProductTag}
-    ]
-  })
-  res.status(200).json(productData)
-  }
-  catch (err) {
-    res.status(500).json(err)
+      include: [{ model: Category }, { model: Tag, through: ProductTag }],
+    });
+    res.status(200).json(productData);
+  } catch (err) {
+    res.status(500).json(err);
   }
 });
 
 // create new product
-router.post('/', (req, res) => {
-  
+router.post("/", (req, res) => {
   Product.create(req.body)
     .then((product) => {
-      
       if (req.body.tagIds.length) {
         const productTagIdArr = req.body.tagIds.map((tag_id) => {
           return {
@@ -46,20 +39,20 @@ router.post('/', (req, res) => {
             tag_id,
           };
         });
-        return ProductTag.bulkCreate(productTagIdArr);
+        return ProductTag.bulkCreate(productTagIdArr).then(() => product);
       }
-     
+
       res.status(200).json(product);
     })
     .then((productTagIds) => res.status(200).json(productTagIds))
     .catch((err) => {
       console.log(err);
-      res.status(400).json(err);
+      res.status(500).json(err);
     });
 });
 
 // update product
-router.put('/:id', (req, res) => {
+router.put("/:id", (req, res) => {
   // update product data
   Product.update(req.body, {
     where: {
@@ -68,11 +61,15 @@ router.put('/:id', (req, res) => {
   })
     .then((updatedProduct) => {
       if (!updatedProduct) {
-        res.status(400).json({message: 'Product not found'})
+        res.status(400).json({ message: "Product not found" });
         return;
       }
-      return res.status(200).json(updatedProduct)
-   
+      // return res.status(200).json(updatedProduct);
+      return ProductTag.findAll({
+        where: {
+          product_id: req.params.id,
+        },
+      });
     })
     .then((productTags) => {
       // get list of current tag_ids
@@ -97,31 +94,30 @@ router.put('/:id', (req, res) => {
         ProductTag.bulkCreate(newProductTags),
       ]);
     })
-    .then((updatedProductTags) => res.json(updatedProductTags))
+    .then(() =>
+      res.status(200).json({ message: "Product updated successfully" })
+    )
     .catch((err) => {
       // console.log(err);
-      res.status(400).json(err);
-    })
-    
+      res.status(500).json(err);
+    });
 });
 
-
-router.delete('/:id', async (req, res) => {
+router.delete("/:id", async (req, res) => {
   // delete one product by its `id` value
   try {
     const deleteProduct = await Product.destroy({
       where: {
-        id: req.params.id
-      }
-    })
+        id: req.params.id,
+      },
+    });
     if (!deleteProduct) {
-      res.status(400).json({message: 'product is not found'})
+      res.status(400).json({ message: "product is not found" });
       return;
     }
-    res.status(200).json({message: 'product is deleted'})
-  }
-  catch (err) {
-    res.status(500).json(err)
+    res.status(200).json({ message: "product is deleted" });
+  } catch (err) {
+    res.status(500).json(err);
   }
 });
 
