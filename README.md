@@ -36,7 +36,7 @@ You can test the API'S GET, POST, PUT, and DELETE routes in insomnia or related 
 
 You can also follow the syntax below to view a walkthrough video that demonsatrates the functionality of the application.
 
-![Demo Video] (https://drive.google.com/file/d/1smYuvAbUPR5diVrHVrX9iXPBJc1eCWN4/view)
+![Demo Video] (https://drive.google.com/file/d/1skw_tRTLL0i3S95CQCUslqwcA8x9iuZy/view)
 
 ## License
 
